@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // -------------------------------------- Attendance Verification ends here ----------------------------------------//
 
     $stmt = $conn->prepare("INSERT INTO attendance (_roll_, _name_, _department_, _timestamp_, _latitude_, _longitude_, _ip_, _status_, _message_) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssssis", $rollNo_, $nameOfStudent_, $deptOfStudent_, $timestamp_, $latitude_, $longitude_, $clientip_, $status_, $message_);
+    $stmt->bind_param("sssssssis", $rollNo_, $nameOfStudent_, $deptOfStudent_, $timestamp_, $latitude_, $longitude_, $clientip_, $status_, $message_);
 
     if ($stmt->execute()) {
         echo $message_;
