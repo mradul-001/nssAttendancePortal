@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Mukta:wght@200;300;400;500;600;700;800&family=New+Amsterdam&family=Rajdhani:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+
+.footer {
+    height: 100vh;
+    width: 100vw;
+    background: black;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 8%;
+    box-sizing: border-box;
+    color: whitesmoke;
+    box-shadow: 0 -10px 100px 100px rgba(0, 0, 0);
+}
+
+.footer iframe {
+    padding: 5px;
+    background: white;
+    height: 450px;
+    width: 600px;
+}
+
+.footer .other_content {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.footer .other_content h2 {
+    font-family: new amsterdam;
+    font-size: 40px;
+    font-weight: 300;
+    margin: 30px 0 20px 0;
+    color: rgb(233, 0, 116);
+}
+
+.footer .other_content p i {
+    padding: 0 20px 0 0;
+}
+
+.footer .other_content p {
+    display: flex;
+    margin: 5px 0;
+    font-family: rajdhani;
+    font-size: 20px;
+}
+
+.footer .other_content p a {
+    text-decoration: none;
+    color: whitesmoke;
+}
+
+.footer .other_content img {
+    width: 40px;
+    margin: 0 20px 0 0;
+}
+
+.footer .other_content div {
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width : 768px) {
+    .footer {
+        flex-direction: column;
+        padding: 40px;
+        box-sizing: border-box;
+    }
+
+    .footer iframe {
+        width: 100%;
+    }
+}
+
+@media (min-width : 768px) {
+    .footer hr {
+        display: none;
+    }
+}

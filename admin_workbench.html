@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Dashboard</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style_navbar.css">
+  <link rel="stylesheet" href="admin_workbench.css">
+</head>
+
+<body>
+
+  <div class="navbar">
+    <div class="logo">
+      <img src="assets/nss_logo_.png" alt="Logo">
+      <span>NSS IITB</span>
+    </div>
+    <div class="links">
+      <a href="logout.php"><button>Logout</button></a>
+    </div>
+  </div>
+
+  <div class="mainContent">
+
+    <div class="boxes">
+
+      <div class="box">
+        <span>Start a slot for attendance</span>
+        <p>The attendance window will remain open for 5 minutes after you start the window.</p>
+        <button class="getVolunteerList" onclick="startAttendanceWindow()">Start Attendance Window</button>
+      </div>
+
+      <div class="box">
+        <span>Get List Of Volunteers</span>
+        <span>Select department</span>
+        <select id="departmentsList" name="departmentsList">
+          <option value="">Select</option>
+          <option value="CE">Campus Engagement</option>
+          <option value="EnS">Environment And Sustainability</option>
+          <option value="EO">Educational Outreach</option>
+          <option value="SD">Social Development</option>
+        </select>
+        <button class="getVolunteerList" onclick="getVolunteerList()">Download</button>
+      </div>
+
+      <div class="box">
+        <span>Get Attendance Data Of a Department</span>
+        <span>Select department</span>
+        <select id="attendanceDepartments" name="attendanceDepartments">
+          <option value="">Select</option>
+          <option value="CE">Campus Engagement</option>
+          <option value="EnS">Environment And Sustainability</option>
+          <option value="EO">Educational Outreach</option>
+          <option value="SD">Social Development</option>
+        </select>
+        <button class="getVolunteerList" onclick="getAttendanceData()">Download</button>
+      </div>
+
+      <div class="box">
+        <span>Get Attendance Data Of a Student</span>
+        <span>Roll Number Of Student</span>
+        <input type="text" name="studentRoll" id="studentRoll">
+        <button class="getVolunteerList" onclick="getAttendanceDataOfAStudent()">Download</button>
+      </div>
+
+    </div>
+
+  </div>
+  <script src="script.js"></script>
+
+
+
+
+
+
+  <script>
+
+    function getVolunteerList() {
+      // fetch the deparment
+      let departmentToBeFetched = document.getElementById("departmentsList").value;
+
+      if (departmentToBeFetched) {
+        // create the url for the php script with the department parameter
+        // php script will automatically fetch this department from the url
+        const url = `getVolunteerData.php?department=${encodeURIComponent(
+          departmentToBeFetched
+        )}`;
+
+        // create an invisible link to trigger the download
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `volunteers_${departmentToBeFetched}.pdf`; // name of the download file
+        link.style.display = "none";
+
+        // append the link to the document and click it
+        document.body.appendChild(link);
+        link.click();
+
+        // remove the link from the document
+        document.body.removeChild(link);
+      } else {
+        alert("Please select a department.");
+      }
+    }
+
+    function getAttendanceData() {
+      // fetch the deparment
+      let departmentToBeFetched = document.getElementById(
+        "attendanceDepartments"
+      ).value;
+
+      if (departmentToBeFetched) {
+        // create the url for the php script with the department parameter
+        // php script will automatically fetch this department from the url
+        const url = `getAttendanceData.php?department=${encodeURIComponent(
+          departmentToBeFetched
+        )}`;
+
+        // create an invisible link to trigger the download
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `volunteers_${departmentToBeFetched}.pdf`; // name of the download file
+        link.style.display = "none";
+
+        // append the link to the document and click it
+        document.body.appendChild(link);
+        link.click();
+
+        // remove the link from the document
+        document.body.removeChild(link);
+      } else {
+        alert("Please select a department.");
+      }
+    }
+
+    function getAttendanceDataOfAStudent() {
+      // fetch the deparment
+      let rollToBeFetched = document.getElementById("studentRoll").value;
+
+      if (rollToBeFetched) {
+        // create the url for the php script with the department parameter
+        // php script will automatically fetch this department from the url
+        const url = `getAttendanceDataOfAStudent.php?rollNumber=${encodeURIComponent(
+          rollToBeFetched
+        )}`;
+
+        // create an invisible link to trigger the download
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `attendance_${rollToBeFetched}.pdf`; // name of the download file
+        link.style.display = "none";
+
+        // append the link to the document and click it
+        document.body.appendChild(link);
+        link.click();
+
+        // remove the link from the document
+        document.body.removeChild(link);
+      } else {
+        alert("Please enter a roll number!");
+      }
+    }
+
+    function startAttendanceWindow() {
+
+
+      if (navigator.geolocation) {
+
+        navigator.geolocation.getCurrentPosition(function (position) {
+
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          const now = new Date();
+          const year = now.getFullYear();
+          const month = now.getMonth() + 1;
+          const day = now.getDate();
+          const hours = now.getHours();
+          const minutes = now.getMinutes();
+          const seconds = now.getSeconds();
+          const formattedDateTime = `${year}-${day.toString().padStart(2, "0")}-${month
+            .toString()
+            .padStart(2, "0")} ${hours.toString().padStart(2, "0")}:${minutes
+              .toString()
+              .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+
+          fetch('admin_workbench.php', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              latitude: latitude,
+              longitude: longitude,
+              timestamp: formattedDateTime,
+            })
+          })
+            .then(response => response.text())
+            .then(data => {
+              console.log('Success:', data);
+              alert(data);
+            })
+            .catch((error) => {
+              console.error('Error:', error);
+            });
+        });
+
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    }
+  </script>
+
+
+
+</body>
+
+</html>

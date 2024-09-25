@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Attendance</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style_navbar.css">
+    <link rel="stylesheet" href="attendance.css">
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="logo">
+            <img src="assets/nss_logo_.png" alt="Logo">
+            <span>NSS IITB</span>
+        </div>
+    </div>
+
+    <div class="content">
+
+        <h2>Attendance Form</h2>
+
+        <form id="attendanceForm">
+            <span>Select the department:</span>
+            <select name="attendanceDepartment" id="attendanceDepartment">
+                <option value="select">Select</option>
+                <option value="EO">Educational Outreach</option>
+                <option value="EnS">Environment And Sustainability</option>
+                <option value="SD">Social Development</option>
+                <option value="CE">Campus Engagement</option>
+            </select>
+            <span>Select the name of the Activity Associate:</span>
+            <select name="AAName" id="AAName">
+            </select>
+            <button type="submit">Mark Attendance</button>
+        </form>
+
+    </div>
+
+    <script>
+
+        document.getElementById("attendanceDepartment").addEventListener("change", (event) => {
+
+            let selectedDepartment = event.target.value;
+            let AANameList = document.getElementById("AAName");
+            AANameList.innerHTML = "";
+
+            fetch("./AAs.json")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    data.forEach(function (AA) {
+                        if (AA.department === selectedDepartment) {
+                            let newOption = document.createElement("option");
+                            newOption.value = AA.roll;
+                            newOption.innerHTML = `${AA.name}`;
+                            AANameList.appendChild(newOption);
+                        }
+                    });
+                });
+        });
+
+        document.getElementById('attendanceForm').addEventListener('submit', function (event) {
+
+            event.preventDefault();
+
+            if (navigator.geolocation) {
+
+                navigator.geolocation.getCurrentPosition(function (position) {
+
+                    const AAroll = document.getElementById("AAName").value;
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    const now = new Date();
+                    const year = now.getFullYear();
+                    const month = now.getMonth() + 1;
+                    const day = now.getDate();
+                    const hours = now.getHours();
+                    const minutes = now.getMinutes();
+                    const seconds = now.getSeconds();
+                    const formattedDateTime = `${year}-${day.toString().padStart(2, "0")}-${month
+                        .toString()
+                        .padStart(2, "0")} ${hours.toString().padStart(2, "0")}:${minutes
+                            .toString()
+                            .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+
+                    fetch('attendance.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            AAroll: AAroll,
+                            latitude: latitude,
+                            longitude: longitude,
+                            timestamp: formattedDateTime,
+                        })
+                    })
+                        .then(response => response.text())
+                        .then(data => {
+                            console.log('Success:', data);
+                            alert(data);
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+                });
+                
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        });
+
+    </script>
+    <script src="script.js"></script>
+
+</body>
+
+</html>

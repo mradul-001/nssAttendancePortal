@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Mukta:wght@200;300;400;500;600;700;800&family=New+Amsterdam&family=Rajdhani:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+#about {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 100px 0 250px 0;
+}
+
+#about h1 {
+    font-family: new amsterdam;
+    letter-spacing: 3px;
+    font-size: 50px;
+    text-align: center;
+    color: rgb(233, 0, 116);
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+#about .textOfAbout {
+    font-family: mukta;
+    font-size: 20px;
+    text-align: left;
+    width: 50%;
+    color: white;
+}
+
+#about h3 {
+    font-family: rajdhani;
+    color: rgb(255, 240, 120, 0.8);
+    /* color: rgba(0, 0, 0, 0.9); */
+    font-size: 25px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#reviewButton button{
+    border: 2px solid rgb(233, 0, 116);
+    color: rgb(233, 0, 116);
+    background: rgb(255, 240, 120);
+    padding: 10px 15px;
+    font-size: 20px;
+    margin-top: 40px;
+    font-family: rajdhani;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+}
+
+#reviewButton button:hover{
+    background: rgb(233, 0, 116);
+    color: rgb(255, 240, 120);
+}
+
+@media(max-width : 768px) {
+
+    #about {
+        height: auto;
+        margin-top: 50px;
+        margin-bottom: 150px;
+    }
+
+    #about .textOfAbout {
+        width: 80%;
+    }
+
+}
