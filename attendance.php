@@ -1,7 +1,7 @@
 <?php
 
-$radius = 5;
-$timeLimit = 300;
+$radius = 50;
+$timeLimit = 600;
 function haversineDistance($lat1, $lon1, $lat2, $lon2)
 {
     $earthRadius = 6371000; // radius of the Earth in meters
@@ -30,10 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $data = json_decode(file_get_contents('php://input'), true); // Get the data in php array format
 
-    $AAroll = $data["AAroll"];
+    $AAroll_ = $data['AAroll'];
     $latitude_ = $data['latitude'];
     $longitude_ = $data['longitude'];
     $timestamp_ = $data['timestamp'];
+    $clientip_ = $data['clientip'];
 
     $conn = new mysqli("localhost", "root", "", "nss_dev");
     if ($conn->connect_error) {
@@ -46,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $conn->prepare("SELECT * 
                             FROM slot_data
                             WHERE _timestamp_ = (SELECT MAX(_timestamp_) FROM slot_data) AND _roll_ = ?");
-    $stmt->bind_param("s", $AAroll);
+    $stmt->bind_param("s", $AAroll_);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -63,24 +64,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($distance <= $radius && $timestampDifference <= $timeLimit) {
             $message_ = "Attendance marked successfully";
             $status_ = 1;
-        } else {
-            $message_ =  "Either the student was out of range or the time limit passed.";
+        } else if ($distance <= $radius && $timestampDifference >= $timeLimit) {
+            $message_ = "Attendance not marked, time limit exceeded!";
             $status_ = 0;
+        } else if ($distance >= $radius && $timestampDifference <= $timeLimit) {
+            $message_ = "Attendance not marked, out of range!";
+            $status_ = -1;
+        } else {
+            $message_ = "Attendance window not open!";
+            $status_ = -2;
         }
 
     } else {
-        echo "No data found.";
+        echo "Attendance window not running!";
     }
 
     // -------------------------------------- Attendance Verification ends here ----------------------------------------//
 
-    $stmt = $conn->prepare("INSERT INTO attendance (_roll_, _name_, _department_, _timestamp_, _latitude_, _longitude_, _status_, _message_) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssssis", $rollNo_, $nameOfStudent_, $deptOfStudent_, $timestamp_, $latitude_, $longitude_, $status_, $message_);
+    $stmt = $conn->prepare("INSERT INTO attendance (_roll_, _name_, _department_, _timestamp_, _latitude_, _longitude_, _ip_, _status_, _message_) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssssis", $rollNo_, $nameOfStudent_, $deptOfStudent_, $timestamp_, $latitude_, $longitude_, $clientip_, $status_, $message_);
 
-    if ($stmt->execute() && $status_ == 1) {
-        echo "Attendance marked successfully!";
+    if ($stmt->execute()) {
+        echo $message_;
     } else {
-        echo "Either you are out of range or the time limit has passed.";
+        echo "Some error occurred!";
     }
 
     $stmt->close();
