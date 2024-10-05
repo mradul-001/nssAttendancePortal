@@ -38,7 +38,6 @@
     </form>
   </div>
 
-  <!-- <script src="https://openfpcdn.io/fingerprintjs/v4"></script> -->
   <script>
     document
       .getElementById("attendanceDepartment")
@@ -78,11 +77,10 @@
             // Collect device attributes
             const userAgent = navigator.userAgent;
             const screenResolution = `${screen.width}x${screen.height}`;
-            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            const language = navigator.language;
             const platform = navigator.platform;
-            const plugins = Array.from(navigator.plugins).map(plugin => plugin.name).join(", ");
-            const fingerprint = btoa(`${userAgent}-${screenResolution}-${timezone}-${language}-${platform}-${plugins}`);
+            const colorDepth = screen.colorDepth;
+            const maxTouchPoints = navigator.maxTouchPoints;
+            const fingerprint = btoa(`${userAgent}-${screenResolution}-${platform}-${colorDepth}-${maxTouchPoints}`);
 
             const AAroll = document.getElementById("AAName").value;
             const latitude = position.coords.latitude;
