@@ -9,8 +9,8 @@ function haversineDistance($lat1, $lon1, $lat2, $lon2)
     $dLat = deg2rad($lat2 - $lat1);
     $dLon = deg2rad($lon2 - $lon1);
     $a = sin($dLat / 2) * sin($dLat / 2) +
-        cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
-        sin($dLon / 2) * sin($dLon / 2);
+    cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+    sin($dLon / 2) * sin($dLon / 2);
     $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
     $distance = $earthRadius * $c;
 
@@ -34,19 +34,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $latitude_ = $data['latitude'];
     $longitude_ = $data['longitude'];
     $timestamp_ = $data['timestamp'];
-    $clientip_ = $data['clientip'];
+    $fingerprint_ = $data['fingerprint'];
 
     $conn = new mysqli("localhost", "root", "", "nss_dev");
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
 
+    echo $fingerprint_;
 
-    // -------------------------------------- Attendance Verification starts here --------------------------------------//
+    // ---------------------------------- Attendance Verification starts here ------------------------------------//
 
-    $stmt = $conn->prepare("SELECT * 
-                            FROM slot_data
-                            WHERE _timestamp_ = (SELECT MAX(_timestamp_) FROM slot_data) AND _roll_ = ?");
+    $stmt = $conn->prepare("SELECT *
+    FROM slot_data
+    WHERE _timestamp_ = (SELECT MAX(_timestamp_) FROM slot_data) AND _roll_ = ?");
     $stmt->bind_param("s", $AAroll_);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -81,8 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // -------------------------------------- Attendance Verification ends here ----------------------------------------//
 
-    $stmt = $conn->prepare("INSERT INTO attendance (_roll_, _name_, _department_, _timestamp_, _latitude_, _longitude_, _ip_, _status_, _message_) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssssssis", $rollNo_, $nameOfStudent_, $deptOfStudent_, $timestamp_, $latitude_, $longitude_, $clientip_, $status_, $message_);
+    $stmt = $conn->prepare("INSERT INTO attendance (_roll_, _name_, _department_, _timestamp_, _latitude_, _longitude_, _fingerprint_, _status_, _message_) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssssssis", $rollNo_, $nameOfStudent_, $deptOfStudent_, $timestamp_, $latitude_, $longitude_, $fingerprint_, $status_, $message_);
 
     if ($stmt->execute()) {
         echo $message_;
@@ -92,5 +93,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt->close();
     $conn->close();
-
 }

@@ -25,9 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $stmt->bind_param("sssss", $adminUsername, $adminName, $timestamp_, $latitude_, $longitude_);
 
     if ($stmt->execute()) {
-        echo "Success!";
+        echo "Attendance Window is now open for 10 minutes, ask students to mark their attendance!";
     } else {
-        echo "Failure!";
+        echo "Something went wrong!";
     }
 
     $stmt->close();
