@@ -15,4 +15,4 @@ This project is a web-based attendance system built for the NSS (National Servic
 3. **View Records**: Admins can view attendance records stored in the database, including timestamp and location details.
 
 
-**Author**: [Mradul Sonkar]
+**Author**: Mradul Sonkar
